@@ -28,20 +28,44 @@ def create_tree(leaf_values: list) -> Tree:
     return Tree(left_child=create_tree(leaf_values[:int(len(leaf_values)/2)]), right_child=create_tree(leaf_values[int(len(leaf_values)/2):]))
 
 
-def minimax(tree: Tree) -> int:
-    return tree_max(tree)
-    
+class Minimax():
+    def __init__(self) -> None:
+        self.alpha = None
+        self.beta = None
 
-def tree_max(tree: Union[Tree, Leaf]) -> int:
-    if type(tree) is Leaf:
-        return tree.get_value()
+    def run(self, tree: Tree):
+        return self.max(tree, 0)
     
-    return max(tree_min(tree.left_child), tree_min(tree.right_child))
+    def max(self, tree: Union[Tree, Leaf], level):
+        print(f"Running max on level: {level}")
+        if type(tree) is Leaf:
+            return tree.get_value()
+        
+        max_val =  max(self.min(tree.left_child, level+1), self.min(tree.right_child, level+1))
 
-def tree_min(tree: Union[Tree, Leaf]) -> int:
-    if type(tree) is Leaf:
-        return tree.get_value()
-    
-    return min(tree_max(tree.left_child), tree_max(tree.right_child))
+        if self.beta is not None and max_val >= self.beta:
+            print(f"Klippte på level {level}")
+            return max_val
+        
+        self.alpha = max(max_val, self.alpha if self.alpha is not None else max_val)
 
-print(minimax(create_tree([0,-2,6,2,5,8,9,2])))
+        return max_val
+
+    def min(self, tree: Union[Tree, Leaf], level):
+        print(f"Running min on level: {level}")
+        if type(tree) is Leaf:
+            return tree.get_value()
+        
+        min_val = min(self.max(tree.left_child, level+1), self.max(tree.right_child, level+1))
+
+        if self.alpha is not None and min_val <= self.alpha:
+            print(f"Klippte på level {level}")
+            return min_val
+        
+        self.beta = min(min_val, self.beta if self.beta is not None else min_val)
+
+        return min_val
+
+
+
+print(Minimax().run(create_tree([0,-2,6,2,-3,-7,8,2])))

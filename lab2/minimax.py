@@ -1,3 +1,4 @@
+
 from typing import Union
 
 class Tree():
@@ -21,9 +22,26 @@ class Leaf():
         print(f"Leaf: {self.value}")
 
 def create_tree(leaf_values: list) -> Tree:
-    tree = Tree(Leaf(leaf_values.pop(0)), Leaf(leaf_values.pop(0)))
+    if len(leaf_values) == 2:
+        return Tree(Leaf(leaf_values.pop(0)), Leaf(leaf_values.pop(0)))
 
-    if len(leaf_values) > 0:
-        tree = Tree(tree, create_tree(leaf_values))
+    return Tree(left_child=create_tree(leaf_values[:int(len(leaf_values)/2)]), right_child=create_tree(leaf_values[int(len(leaf_values)/2):]))
 
-    return tree
+
+def minimax(tree: Tree) -> int:
+    return tree_max(tree)
+    
+
+def tree_max(tree: Union[Tree, Leaf]) -> int:
+    if type(tree) is Leaf:
+        return tree.get_value()
+    
+    return max(tree_min(tree.left_child), tree_min(tree.right_child))
+
+def tree_min(tree: Union[Tree, Leaf]) -> int:
+    if type(tree) is Leaf:
+        return tree.get_value()
+    
+    return min(tree_max(tree.left_child), tree_max(tree.right_child))
+
+print(minimax(create_tree([0,-2,6,2,5,8,9,2])))

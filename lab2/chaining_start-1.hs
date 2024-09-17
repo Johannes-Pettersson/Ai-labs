@@ -27,10 +27,10 @@ onePass wm ((premise, conclusion) :rest) -- split current rule with rest of rule
   | otherwise = onePass wm rest -- else continue 
 
 
-backwardChaining :: RuleSet -> Fact -> WM -> Bool
-backwardChaining _ goal wm 
+backwardChaining :: RuleSet -> WM -> Fact -> Bool
+backwardChaining _ wm goal
     | goal `elem` wm = True -- if object is known, return true
 backwardChaining [] _ _ = False -- of no more rules, return false
-backwardChaining rules goal wm =
-    or [all (\fact -> backwardChaining rules fact wm) premise -- if premise of any rule is true, goal is true, else false
-     | (premise, conclusion) <- rules, goal `elem` conclusion]
+backwardChaining ((premise, conclusion): rest) wm goal
+    | any (goal==) conclusion = all (True==) (map (backwardChaining ((premise, conclusion): rest) wm) premise)
+    | otherwise = backwardChaining rest wm goal

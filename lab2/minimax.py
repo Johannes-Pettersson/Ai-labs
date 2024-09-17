@@ -1,7 +1,7 @@
 from typing import Union
 
 class Tree():
-    def init(self, left_child, right_child) -> None:
+    def __init__(self, left_child, right_child) -> None:
         self.left_child = left_child
         self.right_child = right_child
 
@@ -11,7 +11,7 @@ class Tree():
         self.right_child.print()
 
 class Leaf():
-    def init(self, value) -> None:
+    def __init__(self, value) -> None:
         self.value = value
 
     def get_value(self) -> int:
@@ -21,7 +21,7 @@ class Leaf():
         print(f"Leaf: {self.value}")
 
 def create_tree(leaf_values: list) -> Tree:
-    tree = Tree(Leaf(leaf_values.pop()), Leaf(leaf_values.pop()))
+    tree = Tree(Leaf(leaf_values.pop(0)), Leaf(leaf_values.pop(0)))
 
     if len(leaf_values) > 0:
         tree = Tree(tree, create_tree(leaf_values))

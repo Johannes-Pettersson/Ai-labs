@@ -24,4 +24,4 @@ class CSVtoIMGDisplay():
 
 img_displayer = CSVtoIMGDisplay('lab3/Data_uppgift1/mnist_test.csv')
 
-img_displayer.show_img(2)
+img_displayer.show_img(4)

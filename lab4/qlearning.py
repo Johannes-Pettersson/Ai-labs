@@ -1,4 +1,5 @@
 import numpy as np
+from random import random, randint
 
 np.seterr(all='raise')
 
@@ -22,31 +23,40 @@ class QTable:
         self.previous_reward = np.NaN
 
         # Initiate Q-tables here
-
+        self.q_table = []
+        for i in range(self.initial_array_size):
+            self.q_table.append([0] * self.action_size)
 
     def get_Q_index(self, coded_state):
-        return # Return the index of a row in the Qtable
+        return coded_state-1 # Return the index of a row in the Qtable
 
-    def get_Q_actions(self, Q_index):
-        return # Return action for a row in the Qtable
+    def get_Q_actions(self, Q_index) -> list:
+        return self.q_table[Q_index] # Return action for a row in the Qtable
 
     def set_Q(self, Q_index, action, new_Q):
         # Set calculated Q value for a state action pair
+        self.q_table[Q_index][action] = new_Q
 
     def get_max_Q(self, Q_index):
-        return # Maxumum Q value in a row
+        return max(self.q_table[Q_index]) # Maxumum Q value in a row
 
     def epsilon_greedy(self, Q_index):
-
-        return # Either best action or random action
+        rand_num = random()
+        if rand_num > self.epsilon:
+            return self.get_best_action(Q_index)
+        else:
+            return randint(0,3)
+         # Either best action or random action
         
 
     def get_best_action(self, current_state):
-
-        return # Best action
+        return self.get_Q_actions(current_state).index(self.get_max_Q(current_state)) # Best action
 
     def update_Q(self, current_state, current_reward):
         # Algorithm used from "Artificial Intelligence A Modern Approach" by Stuart Russell and Peter Norvig
         # Q-Learning-Agent, page 844, figure 21.8
 
+
+
         return # Action to take for next step AFTER epsilon greedy has been used
+

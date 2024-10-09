@@ -1,6 +1,6 @@
 import gymnasium as gym
 from gymnasium.wrappers import TransformReward
-#import qlearning 
+import qlearning 
 
 # https://gymnasium.farama.org/environments/toy_text/frozen_lake/
 env = gym.make('FrozenLake-v1', desc=None, map_name="8x8", is_slippery=False, render_mode=None)
@@ -11,6 +11,8 @@ action = env.action_space.sample()
 print("Starting")
 terminated_i = 0
 
+table = qlearning.QTable(0.9, 0.1, 0.7, 4, 64)
+table.set_previous(0, action, 0)
 ### TRAINING LOOP
 # In this loop your agent will be trained without showing the run
 # To stop this training loop you can pres ctrl+c in the terminal. This will start the testing loop below
@@ -18,7 +20,7 @@ terminated_i = 0
 try:
     while True:
         observation, reward, terminated, truncated, info = env.step(action)
-        action = env.action_space.sample()  ### <-- This line samples a random action for from the environment. Replace this with your Qlearning algorithm ###
+        action = table.update_Q(observation, reward)  ### <-- This line samples a random action for from the environment. Replace this with your Qlearning algorithm ###
 
         if terminated or truncated:         ### <-- This condition triggers if the run is terminated, as it the agent reaches a goal or falls into a hole
             terminated_i = terminated_i + 1
@@ -40,7 +42,7 @@ observation, info = env_test.reset(seed=42)
 try:
     while True:
         observation, reward, terminated, truncated, info = env_test.step(action)
-        action = env_test.action_space.sample()  ### <-- This line samples a random action for from the environment. Replace this with your optimal action calculation ###
+        action = table.get_best_action(observation)  ### <-- This line samples a random action for from the environment. Replace this with your optimal action calculation ###
 
         if terminated or truncated:
             observation, info = env_test.reset()
